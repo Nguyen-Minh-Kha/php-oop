@@ -34,37 +34,110 @@ class Character
 
     public String $name;
 
-    public int $life;
+    public int $life = 100;
 
-    public int $maxLife;
+    public int $maxLife = 100;
 
-    public int $attack;
+    public int $attack = 40;
 
     public function __construct(string $name)
     {
         $this->name = $name;
-        $this->life = 100;
-        $this->attack = 50;
     }
 
     public function __toString()
     {
-        return "<p> $this->name : $this->life ( attack : $this->attack )</p>";
+        return "<p> $this->name : ( life : $this->life ) ( attack : $this->attack )</p>";
     }
 
     function hit(Character $target): void
     {
-        $target->life = $this->attack;
+        $target->life -= $this->attack;
+    }
+
+    function heal(int $value): void
+    {
+        $tmp = $this->life + $value;
+        if ($tmp > $this->maxLife) {
+            $this->life = $this->maxLife;
+        } elseif (!($tmp < 0)) {
+            $this->life = $tmp;
+        }
+    }
+}
+
+class Warrior extends Character
+{
+
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function __toString()
+    {
+        return "<p> $this->name : ( life : $this->life ) ( attack : $this->attack )</p>";
+    }
+
+    function charge(Character $target): void
+    {
+        $target->life -= $this->attack;
+
+        $target->attack -= 10;
+    }
+}
+
+class Magician extends Character
+{
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function __toString()
+    {
+        return "<p> $this->name : ( life : $this->life ) ( attack : $this->attack )</p>";
+    }
+
+    public function charm(Character $target): void
+    {
+        $this->heal(10);
+
+        $tmp = $target->attack - $this->attack;
+
+        echo $tmp;
+
+        if ($tmp > 0) {
+            $target->attack = $tmp;
+        } else {
+            $target->attack = 0;
+        }
     }
 }
 
 
-
-$merlin = new Character("Merlin");
-$arthur = new Character("Arthur");
+$merlin = new Magician("Merlin");
+$arthur = new Warrior("Arthur");
 $morganne = new Character("Morganne");
 
 echo $merlin;
 echo $arthur;
-$merlin->hit($arthur);
+// $merlin->hit($arthur);
+// echo $arthur;
+// $arthur->heal(40);
+// echo $arthur;
+echo 'arthur charge merlin';
+
+$arthur->charge($merlin);
+echo $merlin;
+
+echo $arthur;
+
+echo 'merlin charm arthur';
+
+$merlin->charm($arthur);
+
+
+echo $merlin;
+
 echo $arthur;
