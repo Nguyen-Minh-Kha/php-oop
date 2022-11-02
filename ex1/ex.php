@@ -51,10 +51,20 @@ class Character
     {
         return "<p> $this->name : $this->life ( attack : $this->attack )</p>";
     }
+
+    function hit(Character $target): void
+    {
+        $target->life = $this->attack;
+    }
 }
+
+
 
 $merlin = new Character("Merlin");
 $arthur = new Character("Arthur");
 $morganne = new Character("Morganne");
 
 echo $merlin;
+echo $arthur;
+$merlin->hit($arthur);
+echo $arthur;
