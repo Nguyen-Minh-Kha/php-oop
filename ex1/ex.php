@@ -47,12 +47,25 @@ class Character
 
     public function __toString()
     {
-        return "<p> $this->name : ( life : $this->life ) ( attack : $this->attack )</p>";
+        return "
+            <h3>{$this->name}</h3>
+            <ul>
+                <li>Vie : {$this->life} / {$this->maxLife}</li>
+                <li>Attaque : {$this->attack}</li>
+            </ul>
+        ";
     }
 
     function hit(Character $target): void
     {
-        $target->life -= $this->attack;
+
+        $tmp = $target->life - $this->attack;
+
+        if ($tmp > 0) {
+            $target->life = $tmp;
+        } else {
+            $target->life = 0;
+        }
     }
 
     function heal(int $value): void
@@ -74,14 +87,9 @@ class Warrior extends Character
         $this->name = $name;
     }
 
-    public function __toString()
-    {
-        return "<p> $this->name : ( life : $this->life ) ( attack : $this->attack )</p>";
-    }
-
     function charge(Character $target): void
     {
-        $target->life -= $this->attack;
+        $this->hit($target);
 
         $target->attack -= 10;
     }
@@ -94,18 +102,11 @@ class Magician extends Character
         $this->name = $name;
     }
 
-    public function __toString()
-    {
-        return "<p> $this->name : ( life : $this->life ) ( attack : $this->attack )</p>";
-    }
-
     public function charm(Character $target): void
     {
         $this->heal(10);
 
         $tmp = $target->attack - $this->attack;
-
-        echo $tmp;
 
         if ($tmp > 0) {
             $target->attack = $tmp;
